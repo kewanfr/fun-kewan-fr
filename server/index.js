@@ -20,6 +20,71 @@ function saveData(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
+
+// Every 30min, save data in older file (max 10 older files)
+function saveOlderData() {
+  const data = loadData();
+  const now = new Date();
+  const dateStr = now.toISOString().split("T")[0];
+  const timeStr = now.toTimeString().split(" ")[0].replace(/:/g, "-");
+  const olderFileName = path.join(
+    __dirname,
+    "data",
+    "older",
+    `data-${dateStr}-${timeStr}.json`
+  );
+  fs.writeFileSync(olderFileName, JSON.stringify(data, null, 2));
+}
+setInterval(() => {
+  const now = new Date();
+  const minutes = now.getMinutes();
+  if (minutes % 30 === 0) {
+    const olderDir = path.join(__dirname, "data", "older");
+    if (!fs.existsSync(olderDir)) {
+      fs.mkdirSync(olderDir, { recursive: true });
+    }
+
+    saveOlderData();
+  }
+}, 60 * 1000);
+// Every 24h, delete older files
+function deleteOlderFiles() {
+  const now = new Date();
+  const dateStr = now.toISOString().split("T")[0];
+  const olderDir = path.join(__dirname, "data", "older");
+  fs.readdir(olderDir, (err, files) => {
+    if (err) {
+      console.error("Error reading older files directory:", err);
+      return;
+    }
+    files.forEach((file) => {
+      const filePath = path.join(olderDir, file);
+      fs.stat(filePath, (err, stats) => {
+        if (err) {
+          console.error("Error getting file stats:", err);
+          return;
+        }
+        const fileDateStr = file.split("-").slice(1, 3).join("-");
+        if (fileDateStr !== dateStr) {
+          fs.unlink(filePath, (err) => {
+            if (err) {
+              console.error("Error deleting older file:", err);
+            }
+            console.log(`Deleted older file: ${filePath}`);
+          });
+        }
+      });
+    });
+  });
+}
+setInterval(() => {
+  const now = new Date();
+  const hours = now.getHours();
+  if (hours === 0) {
+    deleteOlderFiles();
+  }
+}, 60 * 60 * 1000);
+
 const app = express();
 
 app.use(morgan("combined"));
