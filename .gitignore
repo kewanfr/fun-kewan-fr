@@ -27,3 +27,8 @@ dist-ssr
 .vite/
 old/
 ignore/
+
+server/.env
+.env
+server/data.json
+server/data/data.json
