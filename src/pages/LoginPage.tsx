@@ -17,6 +17,7 @@ export default function LoginPage() {
         if (ok) {
           localStorage.setItem("sitePassword", candidate as string);
           nav(loc.pathname, { replace: true });
+          window.location.reload();
         } else {
           setError("Mot de passe invalide");
         }
@@ -27,9 +28,13 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const ok = await login(pw);
+    console.log("ok", ok);
     if (ok) {
       localStorage.setItem("sitePassword", pw);
-      nav("/", { replace: true });
+      // nav("/", { replace: true });
+      // refresh the page
+      nav(loc.pathname, { replace: true });
+      window.location.reload();
     } else {
       setError("Mot de passe incorrect");
     }
@@ -54,6 +59,7 @@ export default function LoginPage() {
           type="submit"
           // className="w-full bg-primary text-white py-2 rounded"
           className="px-4 bg-secondary text-text font-bold rounded-xl shadow-md hover:bg-secondary/90"
+          onClick={handleSubmit}
         >
           Valider
         </button>
