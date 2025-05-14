@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import DateJarAdd from "./pages/DateJarAdd";
 import DateJarRandom from "./pages/DateJarRandom";
+import LoginPage from "./pages/LoginPage";
 
 import * as api from "./api";
 
@@ -13,6 +19,12 @@ function App() {
     {} as api.IdeasResponse
   );
   const [history, setHistory] = useState<api.HistoryResponse>([]);
+
+  const pw = localStorage.getItem("sitePassword");
+
+  if (!pw) {
+    return <LoginPage />;
+  }
 
   useEffect(() => {
     api.fetchIdeas().then(setIdeas);
@@ -79,7 +91,8 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/" element={pw ? <HomePage /> : <Navigate to="/login" />} />
       <Route
         path="/date/"
         element={
