@@ -24,13 +24,13 @@ app.use(cors());
 app.use(express.json());
 
 // GET all ideas
-app.get("/api/ideas", (req, res) => {
+app.get("/ideas", (req, res) => {
   const { ideas } = loadData();
   res.json(ideas);
 });
 
 // POST add idea
-app.post("/api/ideas/:letter", (req, res) => {
+app.post("/ideas/:letter", (req, res) => {
   const letter = req.params.letter.toUpperCase();
   const text = req.body.text;
   const data = loadData();
@@ -40,7 +40,7 @@ app.post("/api/ideas/:letter", (req, res) => {
 });
 
 // DELETE idea by index
-app.delete("/api/ideas/:letter/:idx", (req, res) => {
+app.delete("/ideas/:letter/:idx", (req, res) => {
   const { letter, idx } = req.params;
   const i = parseInt(idx, 10);
   const data = loadData();
@@ -50,7 +50,7 @@ app.delete("/api/ideas/:letter/:idx", (req, res) => {
 });
 
 // PUT toggle done
-app.put("/api/ideas/:letter/:idx/toggle", (req, res) => {
+app.put("/ideas/:letter/:idx/toggle", (req, res) => {
   const { letter, idx } = req.params;
   const i = parseInt(idx, 10);
   const data = loadData();
@@ -61,13 +61,13 @@ app.put("/api/ideas/:letter/:idx/toggle", (req, res) => {
 });
 
 // GET history
-app.get("/api/history", (req, res) => {
+app.get("/history", (req, res) => {
   const { history } = loadData();
   res.json(history);
 });
 
 // POST history entry
-app.post("/api/history", (req, res) => {
+app.post("/history", (req, res) => {
   const entry = req.body; // { letter, idea, date }
   const data = loadData();
   data.history.push({ ...entry, done: false });
@@ -76,7 +76,7 @@ app.post("/api/history", (req, res) => {
 });
 
 // PUT toggle history
-app.put("/api/history/:idx/toggle", (req, res) => {
+app.put("/history/:idx/toggle", (req, res) => {
   const idx = parseInt(req.params.idx, 10);
   const data = loadData();
   data.history[idx].done = !data.history[idx].done;
@@ -85,7 +85,7 @@ app.put("/api/history/:idx/toggle", (req, res) => {
 });
 
 // DELETE history entry
-app.delete("/api/history/:idx", (req, res) => {
+app.delete("/history/:idx", (req, res) => {
   const idx = parseInt(req.params.idx, 10);
   const data = loadData();
   data.history = data.history.filter((_, i) => i !== idx);
@@ -94,7 +94,7 @@ app.delete("/api/history/:idx", (req, res) => {
 });
 
 // DELETE all history
-app.delete("/api/history", (req, res) => {
+app.delete("/history", (req, res) => {
   const data = loadData();
   data.history = [];
   saveData(data);
