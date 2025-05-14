@@ -3,7 +3,7 @@ export type IdeasResponse = Record<string, Idea[]>;
 export type HistoryResponse = HistoryEntry[];
 export interface HistoryEntry { letter: string; idea: string; date: string; done: boolean; }
 
-const BASE = 'https://fun.api.kewan.dev/';
+const BASE = 'https://fun.api.kewan.dev';
 
 export const fetchIdeas = (): Promise<IdeasResponse> => fetch(`${BASE}/ideas`).then(r => r.json());
 export const addIdea = (letter: string, text: string) =>
