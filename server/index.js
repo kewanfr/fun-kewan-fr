@@ -3,6 +3,7 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const cors = require("cors");
+const morgan = require("morgan");
 
 const DATA_FILE = path.join(__dirname, "data", "data.json");
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -20,7 +21,32 @@ function saveData(data) {
 }
 
 const app = express();
-app.use(cors());
+
+app.use(morgan("combined"));
+
+// app.use((req, res, next) => {
+//   const now = new Date().toISOString();
+//   console.log(`[${now}] ${req.method} ${req.originalUrl}`);
+//   next();
+// });
+// app.use(cors());
+app.use(
+  cors({
+    origin: "*", // ou liste d’origins autorisés, ex. ['http://localhost:3000']
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "x-site-password"],
+  })
+);
+
+app.options(
+  "*",
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "x-site-password"],
+  })
+);
+
 app.use(express.json());
 
 // Middleware Auth – toutes les routes sauf /login
