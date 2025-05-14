@@ -7,7 +7,7 @@ services:
     container_name: date-jar-api
     ports:
       - "172.18.0.1:3003:4000"
-    volumes:
-      # Pour persister les données (data.json) entre les redémarrages
-      - ./server/data.json:/app/data.json
+    # volumes:
+    #   # Pour persister les données (data.json) entre les redémarrages
+    #   - ./server/data.json:/app/data.json
     restart: unless-stopped

@@ -11,6 +11,9 @@ RUN npm install --production
 # Copie le code source
 COPY . .
 
+# Crée le fichier data.json pour éviter l'EISDIR
+RUN touch data.json
+
 # Expose le port de l’API
 EXPOSE 4000
 
