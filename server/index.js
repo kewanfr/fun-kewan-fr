@@ -35,11 +35,12 @@ function saveOlderData() {
   );
   fs.writeFileSync(olderFileName, JSON.stringify(data, null, 2));
 }
+const olderDir = path.join(__dirname, "data", "older");
+
 setInterval(() => {
   const now = new Date();
   const minutes = now.getMinutes();
   if (minutes % 30 === 0) {
-    const olderDir = path.join(__dirname, "data", "older");
     if (!fs.existsSync(olderDir)) {
       fs.mkdirSync(olderDir, { recursive: true });
     }
@@ -47,6 +48,7 @@ setInterval(() => {
     saveOlderData();
   }
 }, 60 * 1000);
+
 if (!fs.existsSync(olderDir)) {
   fs.mkdirSync(olderDir, { recursive: true });
 }
