@@ -12,7 +12,7 @@
     "lint": "eslint .",
     "dev": "vite",
     "build": "vite build",
-    "postbuild": "cp ./dist/index.html ./dist/404.html && echo 'kewan.dev' > ./dist/CNAME",
+    "postbuild": "cp ./dist/index.html ./dist/404.html && echo 'fun.kewan.dev' > ./dist/CNAME",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "preview": "npm run build && vite preview"
