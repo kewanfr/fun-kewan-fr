@@ -78,7 +78,7 @@ const DateJarRandom: FC<DateJarRandomProps> = ({
       </motion.button>
 
       <button
-        onClick={() => navigate("/date-jar/add")}
+        onClick={() => navigate("/date/add")}
         className="flex items-center space-x-2 text-primary mb-4"
       >
         <FaPlus /> <span>Ajouter une idée</span>

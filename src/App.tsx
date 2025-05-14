@@ -105,7 +105,7 @@ function App() {
         }
       />
       <Route
-        path="/date-jar/add"
+        path="/date/add"
         element={
           <DateJarAdd
             ideas={ideas}
@@ -116,7 +116,7 @@ function App() {
         }
       />
       <Route
-        path="/date-jar/random"
+        path="/date/random"
         element={
           <DateJarRandom
             ideas={ideas}

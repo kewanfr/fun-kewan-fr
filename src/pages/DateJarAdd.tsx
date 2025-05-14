@@ -133,7 +133,7 @@ const DateJarAdd: FC<Props> = ({ ideas, onAdd, onDelete, onToggle }) => {
         </motion.div>
       )}
       <button
-        onClick={() => navigate("/date-jar/random")}
+        onClick={() => navigate("/date/random")}
         className="mt-4 text-sm text-primary underline"
       >
         Tirer une idée →

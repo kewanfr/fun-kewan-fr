@@ -3,7 +3,7 @@
 // function Home() {
 
 //   const pages = [
-//     { name: "Date Jar", path: "/date-jar", color: "bg-secondary", icon: "❤️" },
+//     { name: "Date Jar", path: "/date", color: "bg-secondary", icon: "❤️" },
 //     { name: "Autre Page", path: "/autre", color: "bg-accent", icon: "✨" },
 //   ];
 
@@ -35,9 +35,9 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const pages = [
-  { name: "Date Jar", path: "/date-jar/add", icon: "❤️", from: "bottom" },
-  { name: "Tirage", path: "/date-jar/random", icon: "🎲", from: "bottom" },
-  { name: "Autre", path: "/autre", icon: "✨", from: "bottom" },
+  { name: "Date Jar", path: "/date/add", icon: "❤️", from: "bottom" },
+  { name: "Tirage", path: "/date/random", icon: "🎲", from: "bottom" },
+  // { name: "Autre", path: "/autre", icon: "✨", from: "bottom" },
 ];
 
 export default function HomePage() {

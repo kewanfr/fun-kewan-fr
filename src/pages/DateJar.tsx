@@ -148,7 +148,7 @@ const DateJarAdd: FC<DateJarAddProps> = ({ ideas, onAdd, onToggle }) => {
       )}
 
       <button
-        onClick={() => navigate("/date-jar/random")}
+        onClick={() => navigate("/date/random")}
         className="mt-8 text-sm text-primary underline"
       >
         Aller au tirage »
