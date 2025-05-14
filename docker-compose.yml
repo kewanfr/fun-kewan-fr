@@ -9,5 +9,5 @@ services:
       - "172.18.0.1:3003:4000"
     volumes:
       # Pour persister les données (data.json) entre les redémarrages
-      - ./server:/app
+      - ./server/data/:/app/data/
     restart: unless-stopped

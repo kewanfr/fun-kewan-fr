@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const cors = require("cors");
 
-const DATA_FILE = path.join(__dirname, "data.json");
+const DATA_FILE = path.join(__dirname, "data", "data.json");
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 function loadData() {
