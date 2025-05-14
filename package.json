@@ -15,7 +15,8 @@
     "postbuild": "cp ./dist/index.html ./dist/404.html && echo 'fun.kewan.dev' > ./dist/CNAME",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "preview": "npm run build && vite preview"
+    "preview": "npm run build && vite preview",
+    "update": "git pull && docker compose up -d --build && docker compose logs -f"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.4",
