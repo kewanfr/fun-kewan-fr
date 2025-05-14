@@ -52,7 +52,8 @@ export default function LoginPage() {
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
         <button
           type="submit"
-          className="w-full bg-primary text-white py-2 rounded"
+          // className="w-full bg-primary text-white py-2 rounded"
+          className="px-4 bg-secondary text-text font-bold rounded-xl shadow-md hover:bg-secondary/90"
         >
           Valider
         </button>
