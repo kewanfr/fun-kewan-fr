@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { Idea } from "../api";
+import { Idea, IdeasResponse } from "../api";
 
 interface Props {
-  ideas: Record<string, Idea[]>;
+  ideas: IdeasResponse;
   onAdd: (l: string, t: string) => void;
   onDelete: (l: string, i: number) => void;
   onToggle: (l: string, i: number) => void;

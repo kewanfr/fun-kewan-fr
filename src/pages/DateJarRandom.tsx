@@ -2,6 +2,7 @@ import React, { useState, FC } from "react";
 import { motion } from "framer-motion";
 import { FaDice, FaPlus, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { HistoryResponse, IdeasResponse } from "../api";
 
 interface Idea {
   text: string;
@@ -20,8 +21,8 @@ interface RandomIdea {
 }
 
 interface DateJarRandomProps {
-  ideas: Record<string, Idea[]>;
-  history: HistoryEntry[];
+  ideas: IdeasResponse;
+  history: HistoryResponse;
   onPickHistory: (entry: {
     letter: string;
     idea: string;
