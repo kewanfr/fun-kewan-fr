@@ -3,24 +3,29 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { Idea } from "../api";
 
-interface Props {
-  ideas: Record<string, Idea[]>;
-  onAdd: (l: string, t: string) => void;
-  onDelete: (l: string, i: number) => void;
-  onToggle: (l: string, i: number) => void;
+interface Idea {
+  text: string;
+  done: boolean;
 }
+
+interface DateJarAddProps {
+  ideas: Record<string, Idea[]>;
+  onAdd: (letter: string, text: string) => void;
+  onToggle: (letter: string, idx: number) => void;
+}
+
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-const DateJarAdd: FC<Props> = ({ ideas, onAdd, onDelete, onToggle }) => {
+const DateJarAdd: FC<DateJarAddProps> = ({ ideas, onAdd, onToggle }) => {
   const [selected, setSelected] = useState<string | null>(null);
   const [text, setText] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selected || !text.trim()) return;
+    if (!selected) return alert("Sélectionne d’abord une lettre");
+    if (!text.trim()) return;
     onAdd(selected, text.trim());
     setText("");
   };
@@ -28,44 +33,54 @@ const DateJarAdd: FC<Props> = ({ ideas, onAdd, onDelete, onToggle }) => {
   return (
     <div className="px-4 py-8 max-w-xl mx-auto">
       <motion.h2
-        className="text-3xl font-bold mb-6"
+        className="text-3xl font-bold text-text mb-6"
         initial={{ x: -50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
       >
         Ajouter des idées par lettre
       </motion.h2>
+
+      {/* Grille des lettres avec progression */}
       <div className="grid grid-cols-6 gap-4 mb-8">
         {ALPHABET.map((letter) => {
           const list = ideas[letter] || [];
-          const done = list.filter((i) => i.done).length;
-          const pct = list.length ? Math.round((done / list.length) * 100) : 0;
-          const sel = selected === letter;
+          const doneCount = list.filter((i) => i.done).length;
+          const percent = list.length
+            ? Math.round((doneCount / list.length) * 100)
+            : 0;
+
+          const isSelected = selected === letter;
           return (
             <button
               key={letter}
+              type="button"
               onClick={() => setSelected(letter)}
-              className={`flex flex-col items-center p-1 transition-transform ${
-                sel
-                  ? "scale-110 ring-2 ring-primary bg-primary/20 rounded-lg"
-                  : ""
-              }`}
+              className={
+                `flex flex-col items-center p-1 transition-transform ` +
+                `${
+                  isSelected
+                    ? "scale-110 ring-2 ring-primary bg-primary/20 rounded-lg"
+                    : ""
+                }`
+              }
             >
               <div className="w-12 h-12">
                 <CircularProgressbar
-                  value={pct}
+                  value={percent}
                   text={letter}
                   styles={buildStyles({
-                    textSize: "28px",
-                    pathColor: "#2C3E50",
+                    textSize: "30px",
+                    pathColor: isSelected ? "#2C3E50" : "#A3E4D7",
                     trailColor: "#E5E7EB",
                     textColor: "#2C3E50",
                   })}
                 />
               </div>
               <span
-                className={`mt-1 text-sm font-semibold ${
-                  sel ? "text-primary" : "text-text/60"
-                }`}
+                className={
+                  `mt-1 text-sm font-semibold ` +
+                  `${isSelected ? "text-primary" : "text-text/60"}`
+                }
               >
                 {list.length} idée{list.length > 1 ? "s" : ""}
               </span>
@@ -74,13 +89,18 @@ const DateJarAdd: FC<Props> = ({ ideas, onAdd, onDelete, onToggle }) => {
         })}
       </div>
 
+      {/* Formulaire pour la lettre sélectionnée */}
       {selected && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
+          transition={{ duration: 0.4 }}
           className="bg-white/90 backdrop-blur-md rounded-2xl shadow-soft p-6 ring-1 ring-white/20"
         >
-          <h3 className="text-xl font-bold mb-4">Idées pour « {selected} »</h3>
+          <h3 className="text-xl font-bold text-text mb-4">
+            Idées pour « {selected} »
+          </h3>
+
           <form onSubmit={handleSubmit} className="flex space-x-2 mb-6">
             <input
               value={text}
@@ -90,11 +110,13 @@ const DateJarAdd: FC<Props> = ({ ideas, onAdd, onDelete, onToggle }) => {
             />
             <button
               type="submit"
-              className="px-4 bg-secondary text-text font-bold rounded-xl shadow-md hover:bg-secondary/90"
+              className="px-4 bg-secondary text-text font-bold rounded-xl shadow-md hover:bg-secondary/90 transition"
             >
               Ajouter
             </button>
           </form>
+
+          {/* Liste des idées */}
           <ul className="space-y-3 max-h-60 overflow-auto">
             {(ideas[selected] || []).map((item, idx) => (
               <li
@@ -108,20 +130,12 @@ const DateJarAdd: FC<Props> = ({ ideas, onAdd, onDelete, onToggle }) => {
                 >
                   {item.text}
                 </span>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={item.done}
-                    onChange={() => onToggle(selected, idx)}
-                    className="form-checkbox h-5 w-5 text-secondary"
-                  />
-                  <button
-                    onClick={() => onDelete(selected, idx)}
-                    className="text-red-500 hover:opacity-70"
-                  >
-                    Suppr.
-                  </button>
-                </div>
+                <input
+                  type="checkbox"
+                  checked={item.done}
+                  onChange={() => onToggle(selected, idx)}
+                  className="form-checkbox h-5 w-5 text-secondary"
+                />
               </li>
             ))}
             {(ideas[selected] || []).length === 0 && (
@@ -130,15 +144,17 @@ const DateJarAdd: FC<Props> = ({ ideas, onAdd, onDelete, onToggle }) => {
               </li>
             )}
           </ul>
-          <button
-            onClick={() => navigate("/date-jar/random")}
-            className="mt-4 text-sm text-primary underline"
-          >
-            Tirer une idée →
-          </button>
         </motion.div>
       )}
+
+      <button
+        onClick={() => navigate("/date-jar/random")}
+        className="mt-8 text-sm text-primary underline"
+      >
+        Aller au tirage »
+      </button>
     </div>
   );
 };
+
 export default DateJarAdd;

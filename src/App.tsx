@@ -1,116 +1,104 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage.tsx";
+import HomePage from "./pages/HomePage";
 import DateJarAdd from "./pages/DateJarAdd";
 import DateJarRandom from "./pages/DateJarRandom";
 
-
-interface Idea {
-  text: string;
-  done: boolean;
-}
-interface HistoryEntry {
-  letter: string;
-  idea: string;
-  date: string;
-  done: boolean;
-}
+import * as api from "./api";
 
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 function App() {
-  const defaultIdeas = ALPHABET.reduce((acc, letter) => {
-    acc[letter] = [];
-    return acc;
-  }, {} as Record<string, Idea[]>);
-
-  const [ideas, setIdeas] = useState<Record<string, Idea[]>>(() => {
-    try {
-      const stored =
-        JSON.parse(localStorage.getItem("dateJarIdeas") || "null") || {};
-      return { ...defaultIdeas, ...stored };
-    } catch {
-      return defaultIdeas;
-    }
-  });
-
-  const defaultHistory: HistoryEntry[] = [];
-  const [history, setHistory] = useState<HistoryEntry[]>(() => {
-    try {
-      return (
-        JSON.parse(localStorage.getItem("dateJarHistory") || "null") ||
-        defaultHistory
-      );
-    } catch {
-      return defaultHistory;
-    }
-  });
+  const [ideas, setIdeas] = useState<api.IdeasResponse>(
+    {} as api.IdeasResponse
+  );
+  const [history, setHistory] = useState<api.HistoryResponse>([]);
 
   useEffect(() => {
-    localStorage.setItem("dateJarIdeas", JSON.stringify(ideas));
-  }, [ideas]);
+    api.fetchIdeas().then(setIdeas);
+  }, []);
   useEffect(() => {
-    localStorage.setItem("dateJarHistory", JSON.stringify(history));
-  }, [history]);
+    api.fetchHistory().then(setHistory);
+  }, []);
 
   const handleAdd = (letter: string, text: string) => {
-    setIdeas((prev) => ({
-      ...prev,
-      [letter]: [...prev[letter], { text, done: false }],
-    }));
+    api
+      .addIdea(letter, text)
+      .then((updated) => setIdeas((prev) => ({ ...prev, [letter]: updated })));
   };
 
-  const handleToggleDone = (letter: string, idx: number) => {
-    setIdeas((prev) => ({
-      ...prev,
-      [letter]: prev[letter].map((item, i) =>
-        i === idx ? { ...item, done: !item.done } : item
-      ),
-    }));
+  const handleDelete = (letter: string, idx: number) => {
+    api
+      .deleteIdea(letter, idx)
+      .then((updated) => setIdeas((prev) => ({ ...prev, [letter]: updated })));
   };
 
-  const handleAddHistory = (entry: Omit<HistoryEntry, "done">) => {
-    setHistory((prev) => [...prev, { ...entry, done: false }]);
+  const handleToggle = (letter: string, idx: number) => {
+    api.toggleIdea(letter, idx).then((item) =>
+      setIdeas((prev) => ({
+        ...prev,
+        [letter]: prev[letter].map((i, j) => (j === idx ? item : i)),
+      }))
+    );
+  };
+
+  const handlePickHistory = (entry: Omit<api.HistoryEntry, "done">) => {
+    api
+      .addHistory(entry)
+      .then(() => Promise.all([api.fetchHistory(), api.fetchIdeas()]))
+      .then(([newHistory, newIdeas]) => {
+        setHistory(newHistory);
+        setIdeas(newIdeas);
+      });
   };
 
   const handleToggleHistory = (idx: number) => {
-    setHistory((prev) => {
-      const newHist = prev.map((e, i) =>
-        i === idx ? { ...e, done: !e.done } : e
-      );
-      // Toggle corresponding idea in "ideas"
-      const entry = prev[idx];
-      setIdeas((prevIdeas) => {
-        const list = prevIdeas[entry.letter] || [];
-        const ideaIdx = list.findIndex((item) => item.text === entry.idea);
-        if (ideaIdx === -1) return prevIdeas;
-        return {
-          ...prevIdeas,
-          [entry.letter]: list.map((item, i) =>
-            i === ideaIdx ? { ...item, done: !item.done } : item
-          ),
-        };
+    api
+      .toggleHistory(idx)
+      .then(() => Promise.all([api.fetchHistory(), api.fetchIdeas()]))
+      .then(([newHistory, newIdeas]) => {
+        setHistory(newHistory);
+        setIdeas(newIdeas);
       });
-      return newHist;
-    });
   };
 
   const handleClearHistory = () => {
     if (window.confirm("Effacer tout l'historique ?")) {
-      setHistory([]);
+      api
+        .clearHistory()
+        .then(() => Promise.all([api.fetchHistory(), api.fetchIdeas()]))
+        .then(([newHistory, newIdeas]) => {
+          setHistory(newHistory);
+          setIdeas(newIdeas);
+        });
     }
+  };
+  () => {
+    api.clearHistory().then(() => setHistory([]));
   };
 
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route
+        path="/date/"
+        element={
+          <DateJarAdd
+            ideas={ideas}
+            onAdd={handleAdd}
+            onDelete={handleDelete}
+            onToggle={handleToggle}
+          />
+        }
+      />
+      <Route
         path="/date-jar/add"
         element={
           <DateJarAdd
             ideas={ideas}
             onAdd={handleAdd}
-            onToggle={handleToggleDone}
+            onDelete={handleDelete}
+            onToggle={handleToggle}
           />
         }
       />
@@ -120,7 +108,7 @@ function App() {
           <DateJarRandom
             ideas={ideas}
             history={history}
-            onPickHistory={handleAddHistory}
+            onPickHistory={handlePickHistory}
             onToggleHistory={handleToggleHistory}
             onClearHistory={handleClearHistory}
           />
