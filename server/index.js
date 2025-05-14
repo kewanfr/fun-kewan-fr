@@ -29,23 +29,23 @@ app.use(morgan("combined"));
 //   console.log(`[${now}] ${req.method} ${req.originalUrl}`);
 //   next();
 // });
-// app.use(cors());
-app.use(
-  cors({
-    origin: "*", // ou liste d’origins autorisés, ex. ['http://localhost:3000']
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "x-site-password"],
-  })
-);
+app.use(cors());
+// app.use(
+//   cors({
+//     origin: "*", // ou liste d’origins autorisés, ex. ['http://localhost:3000']
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "x-site-password"],
+//   })
+// );
 
-app.options(
-  "*",
-  cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "x-site-password"],
-  })
-);
+// app.options(
+//   "*",
+//   cors({
+//     origin: "*",
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "x-site-password"],
+//   })
+// );
 
 app.use(express.json());
 
