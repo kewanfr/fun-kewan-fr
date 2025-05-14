@@ -47,6 +47,11 @@ setInterval(() => {
     saveOlderData();
   }
 }, 60 * 1000);
+if (!fs.existsSync(olderDir)) {
+  fs.mkdirSync(olderDir, { recursive: true });
+}
+
+saveOlderData();
 // Every 24h, delete older files
 function deleteOlderFiles() {
   const now = new Date();
