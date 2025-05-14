@@ -79,9 +79,11 @@ const DateJarRandom: FC<DateJarRandomProps> = ({
 
       <button
         onClick={() => navigate("/date/add")}
-        className="flex items-center space-x-2 text-primary mb-4"
+        className="flex items-center space-x-2 text-primary mb-4
+        border border-primary/20 rounded-lg px-2 py-2
+        hover:bg-primary transition-colors duration-200"
       >
-        <FaPlus /> <span>Ajouter une idée</span>
+        <FaPlus /> <span>Nouvelle idée / Liste d'idées</span>
       </button>
 
       {randomIdea ? (

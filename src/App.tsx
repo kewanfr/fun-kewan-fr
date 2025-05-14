@@ -101,6 +101,10 @@ function App() {
             onAdd={handleAdd}
             onDelete={handleDelete}
             onToggle={handleToggle}
+            history={history}
+            onPickHistory={handlePickHistory}
+            onToggleHistory={handleToggleHistory}
+            onClearHistory={handleClearHistory}
           />
         }
       />
@@ -112,6 +116,10 @@ function App() {
             onAdd={handleAdd}
             onDelete={handleDelete}
             onToggle={handleToggle}
+            history={history}
+            onPickHistory={handlePickHistory}
+            onToggleHistory={handleToggleHistory}
+            onClearHistory={handleClearHistory}
           />
         }
       />

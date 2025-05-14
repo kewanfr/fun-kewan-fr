@@ -3,17 +3,35 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { Idea, IdeasResponse } from "../api";
+import { HistoryResponse, Idea, IdeasResponse } from "../api";
+import DateJarRandom from "./DateJarRandom";
 
 interface Props {
   ideas: IdeasResponse;
   onAdd: (l: string, t: string) => void;
   onDelete: (l: string, i: number) => void;
   onToggle: (l: string, i: number) => void;
+  history: HistoryResponse;
+  onPickHistory: (entry: {
+    letter: string;
+    idea: string;
+    date: string;
+  }) => void;
+  onToggleHistory: (idx: number) => void;
+  onClearHistory: () => void;
 }
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-const DateJarAdd: FC<Props> = ({ ideas, onAdd, onDelete, onToggle }) => {
+const DateJarAdd: FC<Props> = ({
+  ideas,
+  onAdd,
+  onDelete,
+  onToggle,
+  history,
+  onPickHistory,
+  onToggleHistory,
+  onClearHistory,
+}) => {
   const [selected, setSelected] = useState<string | null>(null);
   const [text, setText] = useState("");
   const navigate = useNavigate();
@@ -138,6 +156,14 @@ const DateJarAdd: FC<Props> = ({ ideas, onAdd, onDelete, onToggle }) => {
       >
         Tirer une idée →
       </button>
+
+      <DateJarRandom
+        ideas={ideas}
+        history={history}
+        onPickHistory={onPickHistory}
+        onToggleHistory={onToggleHistory}
+        onClearHistory={onClearHistory}
+      />
     </div>
   );
 };
